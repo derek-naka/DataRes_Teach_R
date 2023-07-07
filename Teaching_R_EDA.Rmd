@@ -1,0 +1,148 @@
+
+Intro to Visualizations in R
+
+
+```{r setup}
+library(tidyverse)
+
+iris_data <- read.csv("IRIS.csv")
+head(iris_data)
+```
+
+------------------------------
+
+```{r setup}
+library(ggplot2)
+# Scatter plot (2 variables)
+ggplot(data = iris_data, mapping = aes(x=sepal_length, y=sepal_width)) +
+  geom_point()
+```
+
+```{r setup}
+# with customizations
+ggplot(data = iris_data, mapping = aes(x=sepal_length, y=sepal_width, color = species)) +
+  # make background cleaner
+  theme_bw() +
+  # Put species onto different plots
+  facet_wrap(~ species) + 
+  geom_point() + 
+  # setting background colors to legend
+  theme(legend.background = element_rect(fill="lightblue",
+                                         linewidth = 0.5, linetype="solid", 
+                                         colour ="darkblue")) +
+  # adding labels to x axis, y axis, and title
+  labs( 
+    title = "Sepal Width vs. Sepal Length for Different Species",
+    x = "Sepal Length",
+    y = "Sepal Width"
+  )
+```
+
+------------------------------
+
+```{r setup}
+library(ggplot2)
+smaller_data = head(iris_data, 50)
+# Dot Plot (1 variable)
+ggplot(data = smaller_data, mapping = aes(x = sepal_width)) +
+  geom_dotplot()
+```
+
+```{r setup}
+ggplot(data = smaller_data, mapping = aes(x = sepal_width)) +
+  # make background cleaner
+  theme_bw() +
+  # changing colors of dots & adjusting bin width
+  geom_dotplot(binwidth=0.1, fill="deepskyblue") + 
+  # adding labels to x axis, y axis, and title
+  labs( 
+    title = "Distribution of Sepal Width",
+    x = "Sepal Width",
+    y = "Number"
+  )
+```
+
+------------------------------
+
+```{r setup}
+library(ggplot2)
+# Histogram (1 variable)
+ggplot(data = iris_data, mapping = aes(x=sepal_width)) +
+  geom_histogram()
+```
+
+```{r setup}
+ggplot(data = iris_data, mapping = aes(x=sepal_width, fill=species)) +
+  # make background cleaner
+  theme_bw() + 
+  # Change the Legend
+  scale_fill_discrete(name = "Species", labels=c('Setosa', 'Vericolor', 'Virginica')) + 
+  # Creating 15 bins for a side by side bar-graph
+  geom_histogram(bins=15, position="dodge") +
+  # create new y-scale
+  ylim(0, 20) +
+  # adding labels to x axis, y axis, and title
+  labs( 
+    title = "Distribution of Sepal Width",
+    x = "Sepal Width",
+    y = "Number"
+  )
+```
+
+------------------------------
+
+```{r setup}
+library(ggplot2)
+mean_data = iris_data %>%
+  group_by(species) %>%
+  summarise_at(vars(sepal_width), list(name = mean))
+# Bar Plot (2 variables)
+ggplot(data = mean_data, mapping = aes(x=species, y=name)) +
+  geom_col()
+```
+
+```{r setup}
+ggplot(data = mean_data, mapping = aes(x=species, y=name)) +
+  # make background cleaner
+  theme_bw() +
+  # change color of columns and border around them
+  geom_col(fill="deepskyblue", colour="red") + 
+  # change x-axis labels
+  scale_x_discrete(labels=c('Setosa', 'Vericolor', 'Virginica')) + 
+  # changing size of text & putting x-axis labels on a 45 degree angle
+  theme(text=element_text(size=12),
+        axis.text.x = element_text(hjust=0.5, vjust=0.5, angle=45)) +
+  # adding labels to x axis, y axis, and title
+  labs(
+    title = "Average Sepal Width for Species",
+    x = "Species",
+    y = "Sepal Width"
+  )
+```
+
+------------------------------
+
+```{r setup}
+library(ggplot2)
+# Scatter plot (2 variables)
+ggplot(data = iris_data, mapping = aes(x=sepal_length, y=species)) +
+  geom_boxplot()
+```
+
+```{r setup}
+# with customizations
+ggplot(data = iris_data, mapping = aes(x=sepal_length, y=species, color = species)) +
+  # make background cleaner
+  theme_bw() +
+  geom_boxplot() + 
+  # change y-axis labels
+  scale_y_discrete(labels=c('Setosa', 'Vericolor', 'Virginica')) + 
+  # Change the Legend
+  scale_color_discrete(name = "Species", labels=c('Setosa', 'Vericolor', 'Virginica')) +
+  # adding labels to x axis, y axis, and title
+  labs( 
+    title = "Distribution of Sepal Length",
+    x = "Length (inches)",
+    y = "Species"
+  )
+```
